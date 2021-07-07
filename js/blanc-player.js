@@ -186,13 +186,13 @@ var blcplayer = (function () {
         // option 값 변경
         this.option.hover = sec;
         // 이벤트 제거
-        this.player.removeEventListener("mouseenter",hover);
+        this.player.removeEventListener("mousemove",hover);
       }
       else {
         // option 값 변경
         this.option.hover = sec;
         // 이벤트 추가
-        this.player.addEventListener("mouseenter",hover);
+        this.player.addEventListener("mousemove",hover);
       }
 
       // timeout object
