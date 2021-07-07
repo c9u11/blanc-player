@@ -149,8 +149,6 @@ var blcplayer = (function () {
       this.hover(this.option.hover);
       // controls 기능
       this.controlBar(this.option.controlBar);
-      // // bigPlayButton 기능
-      // this.bigPlayButton(this.option.bigPlayButton);
       // // skipButton 기능
       // this.skipButton(this.option.skipButton);
       // // pip 기능
