@@ -33,6 +33,48 @@
         <input type="checkbox" id="controlBar-option" checked>
       </td>
     </tr>
+    <!-- hotkey - Toggle -->
+    <tr>
+      <th>hotkey - Toggle (bool) : </th>
+      <td>
+        <input type="checkbox" id="hotkey-toggle-option" checked>
+      </td>
+    </tr>
+    <!-- hotkey - secSkip -->
+    <tr>
+      <th>hotkey - secSkip (bool) : </th>
+      <td>
+        <input type="text" id="hotkey-secSkip-option" value="5">
+      </td>
+    </tr>
+    <!-- hotkey - playToggle -->
+    <tr>
+      <th>hotkey - playToggle (bool) : </th>
+      <td>
+        <input type="checkbox" id="hotkey-playToggle-option" checked>
+      </td>
+    </tr>
+    <!-- hotkey - soundToggle -->
+    <tr>
+      <th>hotkey - soundToggle (bool) : </th>
+      <td>
+        <input type="checkbox" id="hotkey-soundToggle-option" checked>
+      </td>
+    </tr>
+    <!-- hotkey - wideToggle -->
+    <tr>
+      <th>hotkey - wideToggle (bool) : </th>
+      <td>
+        <input type="checkbox" id="hotkey-wideToggle-option" checked>
+      </td>
+    </tr>
+    <!-- hotkey - fullToggle -->
+    <tr>
+      <th>hotkey - fullToggle (bool) : </th>
+      <td>
+        <input type="checkbox" id="hotkey-fullToggle-option" checked>
+      </td>
+    </tr>
   </table>
   <div style="height: 10000px;"></div>
   <p>bottom</p>
@@ -43,6 +85,28 @@
     // hover event
     addEvent("hover-option", "change", function(){blcplayer.hover(this.value * 1)})
     addEvent("controlBar-option", "click", function(){blcplayer.controlBar(this.checked)})
+    addEvent("hotkey-toggle-option", "click",       function(){
+      blcplayer.hotkey.toggle(this.checked);
+      if(!this.checked) {
+        document.getElementById("hotkey-secSkip-option").value = 0;
+        document.getElementById("hotkey-playToggle-option").checked = false;
+        document.getElementById("hotkey-soundToggle-option").checked = false;
+        document.getElementById("hotkey-wideToggle-option").checked = false;
+        document.getElementById("hotkey-fullToggle-option").checked = false;
+      }
+      else {
+        document.getElementById("hotkey-secSkip-option").value = 5;
+        document.getElementById("hotkey-playToggle-option").checked = true;
+        document.getElementById("hotkey-soundToggle-option").checked = true;
+        document.getElementById("hotkey-wideToggle-option").checked = true;
+        document.getElementById("hotkey-fullToggle-option").checked = true;
+      }
+    })
+    addEvent("hotkey-secSkip-option", "click",      function(){blcplayer.hotkey.secSkip(this.value * 1)})
+    addEvent("hotkey-playToggle-option", "click",   function(){blcplayer.hotkey.playToggle(this.checked)})
+    addEvent("hotkey-soundToggle-option", "click",  function(){blcplayer.hotkey.soundToggle(this.checked)})
+    addEvent("hotkey-wideToggle-option", "click",   function(){blcplayer.hotkey.wideToggle(this.checked)})
+    addEvent("hotkey-fullToggle-option", "click",   function(){blcplayer.hotkey.fullToggle(this.checked)})
     function addEvent(id, type, func){
       document.getElementById(id).addEventListener(type, func);
     }

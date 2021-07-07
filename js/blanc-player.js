@@ -313,7 +313,21 @@ var blcplayer = (function () {
           throw new Error("Parameter is not boolean");
 
         // option 값 변경
-        blcplayer.option.hotkey.secSkip = bool;
+        if(!bool){
+          blcplayer.option.hotkey.secSkip = 0;
+          blcplayer.option.hotkey.playToggle = false;
+          blcplayer.option.hotkey.soundToggle = false;
+          blcplayer.option.hotkey.wideToggle = false;
+          blcplayer.option.hotkey.fullToggle = false;
+        }
+        else {
+
+          blcplayer.option.hotkey.secSkip = 5;
+          blcplayer.option.hotkey.playToggle = true;
+          blcplayer.option.hotkey.soundToggle = true;
+          blcplayer.option.hotkey.wideToggle = true;
+          blcplayer.option.hotkey.fullToggle = true;
+        }
 
         return "hotkey - Toggle : " + bool;
       },
