@@ -214,8 +214,6 @@ var blcplayer = (function () {
       this.hotkey.fullToggle(this.option.hotkey.fullToggle);
       // // pip 기능
       // this.pip(this.option.pip);
-      // // wideButton 기능
-      // this.wideButton(this.option.wideButton);
       // // dock 기능
       // this.dock(this.option.dock);
       // // mouseoutEvent 기능
@@ -257,11 +255,24 @@ var blcplayer = (function () {
       var outFunc = null;
       // mouseenter func
       function hover() {
+        if(blcplayer.video.paused) return;
         // player class 추가
         addClass(this, "hover");
         // timeout clear
         clearTimeout(outFunc);
         // timeout set
+        outFunc = setTimeout(function () {
+          // player class 추가
+          removeClass(blcplayer.player, "hover");
+        }, blcplayer.option.hover * 1000);
+      }
+
+      blcplayer.video.onpause = function(){
+        addClass(blcplayer.player,"hover");
+        clearTimeout(outFunc);
+      }
+      blcplayer.video.onplay = function () {
+        clearTimeout(outFunc);
         outFunc = setTimeout(function () {
           // player class 추가
           removeClass(blcplayer.player, "hover");
