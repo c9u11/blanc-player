@@ -12,10 +12,18 @@
   <!-- css -->
   <link href="../css/blanc-player.css" rel="stylesheet" />
   <!-- player end -->
+
+  <style>
+    th {
+      text-align: right;
+    }
+  </style>
 </head>
 
 <body>
-  <div id="blc-player">
+  <div id="blc-player-wrap">
+    <div id="blc-player">
+    </div>
   </div>
   <br>
   <table>
@@ -75,6 +83,13 @@
         <input type="checkbox" id="hotkey-fullToggle-option" checked>
       </td>
     </tr>
+    <!-- pip -->
+    <tr>
+      <th>pip : </th>
+      <td>
+        <input type="checkbox" id="pip-option" checked>
+      </td>
+    </tr>
   </table>
   <div style="height: 10000px;"></div>
   <p>bottom</p>
@@ -107,6 +122,7 @@
     addEvent("hotkey-soundToggle-option", "click",  function(){blcplayer.hotkey.soundToggle(this.checked)})
     addEvent("hotkey-wideToggle-option", "click",   function(){blcplayer.hotkey.wideToggle(this.checked)})
     addEvent("hotkey-fullToggle-option", "click",   function(){blcplayer.hotkey.fullToggle(this.checked)})
+    addEvent("pip-option", "click",   function(){blcplayer.pip(this.checked)})
     function addEvent(id, type, func){
       document.getElementById(id).addEventListener(type, func);
     }

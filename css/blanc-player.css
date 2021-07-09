@@ -1,10 +1,54 @@
+
+/* default */
+#blc-player-wrap *{
+  outline: none;
+  user-select: none;
+}
+#blc-player-wrap button {
+  cursor: pointer;
+}
+/* wrap */
+#blc-player-wrap {
+  position: relative;
+  width: 840px;
+  min-width: 840px;
+  height: 473px;
+  min-height: 473px;
+  transition: width 0.5s, height 0.5s;
+  font-size: 10px;
+}
+#blc-player-wrap.blc-wide-screen {
+  width: 1280px;
+  height: 720px;
+  transition: width 0.5s, height 0.5s;
+}
+/* Player */
 #blc-player {
   position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 10px;
 }
+#blc-player.blc-PIP-screen {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 999;
+  border: 1px grey solid;
+  transition: 0s;
+}
+#blc-player.blc-PIP-screen.pc {
+  width: 400px;
+  min-width: 0;
+  height: 225px;
+  min-height: 0;
+}
+
 #blc-video {
   display: flex;
   width: 100%;
   height: 100%;
+  border: none;
   pointer-events: none;
 }
 /* blc-control-bar */
@@ -19,7 +63,6 @@
   width: 100%;
   opacity: 0;
   transition: opacity 0.5s;
-  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1));
 }
 .blc-control-bar.hover #blc-control-bar {
   opacity: 1;
@@ -39,4 +82,42 @@
 }
 .mobile #blc-control-bar {
   height: 48px;
+}
+
+
+/* PIP Close Button */
+#blc-player .blc-pip-close-button{
+  display: none;
+}
+#blc-player.blc-PIP-screen .blc-pip-close-button{
+  display: inline-block;
+  position: absolute;
+  right: -1px;
+  top: 0px;
+  transform: translateY(-100%);
+  background: white;
+  border: 1px grey solid;
+  opacity: 0.3;
+}
+#blc-player.blc-PIP-screen .blc-pip-close-button:hover {
+  opacity: 1;
+}
+#blc-player.blc-PIP-screen .blc-pip-close-button:before, #blc-player.blc-PIP-screen .blc-pip-close-button:after {
+  position: absolute;
+  top: 0px;
+  left: 14px;
+  content: ' ';
+  height: 30px;
+  width: 2px;
+  background-color: #333;
+}
+#blc-player.blc-PIP-screen .blc-pip-close-button:before {
+  transform: rotate(45deg);
+}
+#blc-player.blc-PIP-screen .blc-pip-close-button:after {
+  transform: rotate(-45deg);
+}
+#blc-player.blc-PIP-screen.pc .blc-pip-close-button{
+	height: 32px;
+  width: 32px;
 }

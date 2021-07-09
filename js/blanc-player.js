@@ -57,7 +57,6 @@ var blcplayer = (function () {
     };
     blcplayer.player.setAttribute("tabindex", 0);
     blcplayer.player.addEventListener("keydown", function (event) {
-      var player = blcplayer.player;
       var video = blcplayer.video;
       var option = blcplayer.option.hotkey;
       switch (event.key) {
@@ -80,15 +79,13 @@ var blcplayer = (function () {
           break;
         case "w":
           if (!option.wideToggle) return;
-          if (hasClass(player, "blc-wide-screen"))
-            removeClass(player, "blc-wide-screen");
-          else addClass(player, "blc-wide-screen");
+          if (!blcplayer.wide()) blcplayer.wide(true);
+          else blcplayer.wide(false);
           break;
         case "f":
           if (!option.fullToggle) return;
-          if (hasClass(player, "blc-full-screen"))
-            removeClass(player, "blc-full-screen");
-          else addClass(player, "blc-full-screen");
+          if (!blcplayer.full()) blcplayer.full(true);
+          else blcplayer.full(false);
           break;
         default:
           break;
@@ -102,6 +99,8 @@ var blcplayer = (function () {
     video: null,
     // player element
     player: null,
+    // wrap element
+    wrap: null,
     option: {
       // device
       device: "pc",
@@ -145,6 +144,8 @@ var blcplayer = (function () {
         disable: true,
         url: window.location.href,
       },
+      wide: false,
+      full: false,
       // hover : 3
       hover: 3,
       // controlBar : true
@@ -160,7 +161,7 @@ var blcplayer = (function () {
       // 기본 PIP 모드 : false
       pictureInPictureToggle: false,
       // pip mode : false
-      pip: false,
+      pip: true,
       // 시네마 모드 : false
       wideButton: false,
       // dock : false
@@ -190,6 +191,8 @@ var blcplayer = (function () {
       this.player.innerHTML = `<video id="blc-video"></video>`;
       this.video = document.getElementById("blc-video");
 
+      // wrap ele 선언
+      this.wrap = document.getElementById("blc-player-wrap");
       // src 추가
       this.video.setAttribute("src", this.option.sources[0].src);
 
@@ -213,7 +216,7 @@ var blcplayer = (function () {
       // fullToggle
       this.hotkey.fullToggle(this.option.hotkey.fullToggle);
       // // pip 기능
-      // this.pip(this.option.pip);
+      this.pip(this.option.pip);
       // // dock 기능
       // this.dock(this.option.dock);
       // // mouseoutEvent 기능
@@ -230,6 +233,68 @@ var blcplayer = (function () {
       // this.toolTip(this.option.toolTip);
       // func 실행
       if (typeof func === "function") func();
+    },
+    wide: function (bool) {
+      // 현재 설정값 return
+      if (bool === undefined) return this.option.wide;
+
+      // Parameter error
+      if (typeof bool !== "boolean")
+        throw new Error("Parameter is not boolean");
+
+      // false 일 때 기능 제거
+      if (!bool) {
+        // option 값 변경
+        this.option.wide = bool;
+        // player class 제거
+        removeClass(this.wrap, "blc-wide-screen");
+      } else {
+        // option 값 변경
+        this.option.wide = bool;
+        // player class 추가
+        addClass(this.wrap, "blc-wide-screen");
+      }
+
+      return "wideScreen : " + this.option.wide;
+    },
+    full: function (bool) {
+      // 현재 설정값 return
+      if (bool === undefined) return this.option.full;
+
+      // Parameter error
+      if (typeof bool !== "boolean")
+        throw new Error("Parameter is not boolean");
+
+      // false 일 때 기능 제거
+      if (!bool) {
+        // option 값 변경
+        this.option.full = bool;
+        // player exit fullscreen
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      } else {
+        // option 값 변경
+        this.option.full = bool;
+        // player request fullscreen
+        if (this.player.requestFullscreen) {
+          this.player.requestFullscreen();
+        } else if (this.player.webkitRequestFullScreen) {
+          this.player.webkitRequestFullScreen();
+        } else if (this.player.mozRequestFullScreen) {
+          this.player.mozRequestFullScreen();
+        } else if (this.player.msRequestFullscreen) {
+          this.player.msRequestFullscreen();
+        }
+      }
+
+      return "wideScreen : " + this.option.full;
     },
     hover: function (sec) {
       // 현재 설정값 return
@@ -255,7 +320,7 @@ var blcplayer = (function () {
       var outFunc = null;
       // mouseenter func
       function hover() {
-        if(blcplayer.video.paused) return;
+        if (blcplayer.video.paused) return;
         // player class 추가
         addClass(this, "hover");
         // timeout clear
@@ -267,17 +332,17 @@ var blcplayer = (function () {
         }, blcplayer.option.hover * 1000);
       }
 
-      blcplayer.video.onpause = function(){
-        addClass(blcplayer.player,"hover");
+      blcplayer.video.onpause = function () {
+        addClass(blcplayer.player, "hover");
         clearTimeout(outFunc);
-      }
+      };
       blcplayer.video.onplay = function () {
         clearTimeout(outFunc);
         outFunc = setTimeout(function () {
           // player class 추가
           removeClass(blcplayer.player, "hover");
         }, blcplayer.option.hover * 1000);
-      }
+      };
 
       return "hover : " + this.option.hover + "sec";
     },
@@ -324,15 +389,13 @@ var blcplayer = (function () {
           throw new Error("Parameter is not boolean");
 
         // option 값 변경
-        if(!bool){
+        if (!bool) {
           blcplayer.option.hotkey.secSkip = 0;
           blcplayer.option.hotkey.playToggle = false;
           blcplayer.option.hotkey.soundToggle = false;
           blcplayer.option.hotkey.wideToggle = false;
           blcplayer.option.hotkey.fullToggle = false;
-        }
-        else {
-
+        } else {
           blcplayer.option.hotkey.secSkip = 5;
           blcplayer.option.hotkey.playToggle = true;
           blcplayer.option.hotkey.soundToggle = true;
@@ -406,6 +469,84 @@ var blcplayer = (function () {
 
         return "hotkey - fullToggle : " + blcplayer.option.hotkey.fullToggle;
       },
+    },
+    pip: function (bool) {
+      // pip close state
+      this.pip.closeState =
+        this.pip.closeState === undefined ? false : this.pip.closeState;
+      // pip 실행문
+      this.pip.handler =
+        this.pip.handler ||
+        function () {
+          if (
+            blcplayer.pip() &&
+            !blcplayer.pip.closeState &&
+            window.scrollY > blcplayer.pip.value
+          ) {
+            // player class 추가
+            addClass(blcplayer.player, "blc-PIP-screen");
+          } else if (window.scrollY <= blcplayer.pip.value) {
+            removeClass(blcplayer.player, "blc-PIP-screen");
+            blcplayer.pip.closeState = false;
+          } else {
+          }
+        };
+      // Player element resize 확인
+      this.pip.setValue =
+        this.pip.setValue ||
+        new ResizeObserver(function () {
+          if (!hasClass(blcplayer.player, "blc-PIP-screen")) {
+            blcplayer.pip.value =
+              blcplayer.player.offsetTop + blcplayer.player.offsetHeight;
+          }
+        });
+      // pip 기준값
+      this.pip.value =
+        this.pip.value || this.player.offsetTop + this.player.offsetHeight;
+
+      // 현재 설정값 return
+      if (bool === undefined) return this.option.pip;
+
+      // Parameter error
+      if (typeof bool !== "boolean")
+        throw new Error("Parameter is not boolean");
+
+      // 기능 on / off
+      if (!bool) {
+        // unobserve player height
+        this.pip.setValue.unobserve(this.player);
+        // option 값 변경
+        this.option.pip = bool;
+        // event 제거
+        window.removeEventListener("scroll", blcplayer.pip.handler);
+        // element 제거
+        removeElement("class", "blc-pip-close-button");
+        // 기존 클래스 제거
+        removeClass(this.player, "blc-PIP-screen");
+      } else {
+        // observe player height
+        this.pip.setValue.observe(this.player);
+        // option 값 변경
+        this.option.pip = bool;
+        // event 추가
+        window.addEventListener("scroll", blcplayer.pip.handler);
+        // pip 닫기 버튼 추가
+        if (!isExistsElement("class", "blc-pip-close-button")) {
+          var pipCloseButton = makeElement({
+            tag: "button",
+            class: "blc-pip-close-button",
+            click: function () {
+              removeClass(blcplayer.player, "blc-PIP-screen");
+              blcplayer.pip.closeState = true;
+            },
+          });
+          this.player.appendChild(pipCloseButton);
+        }
+        // Handler 초기 한번 실행
+        this.pip.handler();
+      }
+
+      return "PIP : " + this.option.pip;
     },
   };
 })();
